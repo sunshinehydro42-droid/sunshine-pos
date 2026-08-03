@@ -1,0 +1,143 @@
+* { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+
+/* ================= Theme tokens (โหมดสว่าง/มืด) ================= */
+:root {
+  --bg-body: #f4f6f8;
+  --bg-panel: #ffffff;
+  --bg-sidebar: #2c3e50;
+  --bg-sidebar-hover: #34495e;
+  --accent: #3498db;
+  --accent-dark: #2c81ba;
+  --text-main: #333333;
+  --text-sub: #555555;
+  --text-muted: #7f8c8d;
+  --border-color: #eeeeee;
+  --border-strong: #dddddd;
+  --card-shadow: rgba(0,0,0,0.05);
+  --input-bg: #ffffff;
+  --modal-overlay: rgba(0,0,0,0.5);
+  --alt-bg: #f8f9fa;
+  --danger: #dc3545;
+}
+body.dark-mode {
+  --bg-body: #181b1f;
+  --bg-panel: #24282e;
+  --bg-sidebar: #14161a;
+  --bg-sidebar-hover: #262b31;
+  --accent: #3498db;
+  --accent-dark: #5faee3;
+  --text-main: #e8eaed;
+  --text-sub: #c3c9cf;
+  --text-muted: #93999f;
+  --border-color: #33383e;
+  --border-strong: #3d434a;
+  --card-shadow: rgba(0,0,0,0.35);
+  --input-bg: #2c3138;
+  --modal-overlay: rgba(0,0,0,0.7);
+  --alt-bg: #2a2e34;
+  --danger: #e05363;
+}
+.page-title { font-size: 24px; font-weight: bold; margin-bottom: 20px; color: var(--text-main); border-bottom: 2px solid var(--border-strong); padding-bottom: 10px; }
+.badge-method { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; }
+.badge-cash { background: #28a745; }
+.badge-qr { background: #8e44ad; }
+.modal-field { margin-bottom: 12px; text-align: left; }
+.modal-field label { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: bold; }
+.modal-field input, .modal-field select { width: 100%; padding: 12px; font-size: 16px; border: 1px solid var(--border-strong); border-radius: 6px; background: var(--input-bg); color: var(--text-main); }
+.modal-actions { display: flex; gap: 10px; margin-top: 15px; }
+.modal-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
+.btn-save { background: #f39c12; color: white; }
+.btn-confirm { background: #28a745; color: white; }
+.btn-cancel { background: var(--danger); color: white; }
+.report-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.report-tab-btn { padding: 10px 20px; background: var(--bg-panel); border: 2px solid var(--border-strong); border-radius: 8px; font-weight: bold; cursor: pointer; color: var(--text-sub); }
+.report-tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+.custom-range-panel { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px 16px 4px 16px; margin-bottom: 20px; box-shadow: 0 2px 8px var(--card-shadow); }
+.custom-range-panel .modal-field input { width: 170px; }
+.report-summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+.report-card { background: var(--bg-panel); padding: 18px; border-radius: 12px; box-shadow: 0 2px 8px var(--card-shadow); border: 1px solid var(--border-color); }
+.report-card-label { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+.report-card-value { font-size: 24px; font-weight: bold; color: var(--text-main); }
+.report-card-value.highlight { color: #28a745; }
+.report-table-wrap { background: var(--bg-panel); border-radius: 10px; box-shadow: 0 2px 8px var(--card-shadow); overflow-x: auto; border: 1px solid var(--border-color); }
+.report-table { width: 100%; border-collapse: collapse; min-width: 420px; }
+.report-table th, .report-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
+.report-table th { background: var(--bg-sidebar); color: white; font-weight: normal; }
+.report-table td.num { text-align: right; }
+.report-rank { display: inline-flex; width: 22px; height: 22px; border-radius: 50%; background: var(--alt-bg); color: var(--text-sub); align-items: center; justify-content: center; font-size: 12px; margin-right: 8px; font-weight: bold; }
+.report-rank.top1 { background: #f1c40f; color: white; }
+.report-rank.top2 { background: #bdc3c7; color: white; }
+.report-rank.top3 { background: #cd6155; color: white; }
+.history-empty { text-align: center; color: var(--text-muted); padding: 30px 0; }
+.history-day-group { background: var(--bg-panel); border-radius: 10px; box-shadow: 0 2px 8px var(--card-shadow); margin-bottom: 15px; overflow: hidden; border: 1px solid var(--border-color); }
+.history-day-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: var(--bg-sidebar); color: white; cursor: pointer; user-select: none; gap: 10px; flex-wrap: wrap; }
+.history-day-header:hover { background: var(--bg-sidebar-hover); }
+.history-day-title { font-weight: bold; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.history-day-meta { font-size: 13px; color: #dfe6e9; display: flex; gap: 15px; align-items: center; }
+.history-day-chevron { display: inline-block; transition: transform 0.2s; font-size: 12px; }
+.history-day-group.open .history-day-chevron { transform: rotate(90deg); }
+.history-day-body { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+.history-day-group.open .history-day-body { max-height: 3000px; }
+.history-bill-row { border-bottom: 1px solid var(--border-color); }
+.history-bill-row:last-child { border-bottom: none; }
+.history-bill-summary { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; padding: 12px 18px; cursor: pointer; font-size: 14px; color: var(--text-main); }
+.history-bill-summary:hover { background: var(--alt-bg); }
+.history-bill-summary .bs-billno { font-weight: bold; min-width: 80px; color: var(--text-main); }
+.history-bill-summary .bs-name { flex-grow: 1; min-width: 100px; }
+.history-bill-summary .bs-total { color: #28a745; font-weight: bold; min-width: 70px; text-align: right; }
+.history-bill-summary .bs-time { color: var(--text-muted); font-size: 12px; min-width: 60px; }
+.bill-expand-icon { transition: transform 0.2s; color: var(--text-muted); margin-left: auto; }
+.history-bill-row.open .bill-expand-icon { transform: rotate(180deg); }
+.history-bill-detail { display: none; background: var(--alt-bg); padding: 12px 18px 16px 18px; font-size: 13px; color: var(--text-main); }
+.history-bill-row.open .history-bill-detail { display: block; }
+.history-item-line { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--border-strong); }
+.history-item-line:last-child { border-bottom: none; }
+.history-detail-meta { margin-bottom: 8px; color: var(--text-muted); }
+
+/* ================= หน้าหลังบ้าน: โครงหลัก + แท็บภายในหน้า ================= */
+.backoffice-page { max-width: 900px; margin: 0 auto; padding: 28px 24px 40px; overflow-y: auto; height: 100%; }
+
+.backoffice-tabs { display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+.backoffice-tab-btn { padding: 10px 18px; background: var(--bg-panel); border: 2px solid var(--border-strong); border-radius: 8px; font-weight: bold; cursor: pointer; color: var(--text-sub); }
+.backoffice-tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+.backoffice-panel { display: none; }
+.backoffice-panel.active { display: block; }
+
+/* ================= แท็บ: จัดการสินค้า ================= */
+.bo-toolbar { display: flex; gap: 10px; margin-bottom: 18px; }
+.bo-btn { padding: 10px 16px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
+.bo-btn-primary { background: var(--accent); color: white; }
+.bo-btn-secondary { background: var(--alt-bg); color: var(--text-main); border: 1px solid var(--border-strong); }
+
+.bo-category-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.bo-category-chip { display: flex; align-items: center; gap: 8px; background: var(--bg-panel); border: 1px solid var(--border-strong); border-radius: 20px; padding: 6px 8px 6px 14px; font-size: 14px; color: var(--text-main); }
+.bo-category-chip button { width: 20px; height: 20px; border-radius: 50%; border: none; background: var(--alt-bg); color: var(--text-muted); cursor: pointer; line-height: 1; }
+.bo-category-chip button:hover { background: var(--danger); color: white; }
+
+.bo-section-title { font-size: 15px; font-weight: bold; color: var(--text-sub); margin: 8px 0 12px; }
+
+/* บล็อกต่อหมวดหมู่ 1 บล็อก = 1 หมวดหมู่ ให้เห็นชัดว่าอันไหนมีชุดตัวเลือกอะไร เรียงตามลำดับหมวดหมู่จริง */
+.bo-option-group-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.bo-option-cat-block { background: var(--alt-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 16px; }
+.bo-option-cat-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.bo-option-cat-name { font-weight: bold; color: var(--text-main); font-size: 14px; }
+.bo-btn-sm { padding: 6px 12px; font-size: 12px; white-space: nowrap; }
+
+.bo-option-group-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px 16px; box-shadow: 0 1px 4px var(--card-shadow); }
+.bo-option-group-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.bo-option-group-head b { color: var(--text-main); font-size: 14px; }
+.bo-option-group-choices { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.bo-option-chip { background: var(--alt-bg); color: var(--text-sub); border-radius: 12px; padding: 3px 10px; font-size: 12px; }
+.bo-option-empty { color: var(--text-muted); font-size: 13px; padding: 4px 2px; }
+
+.bo-product-table { width: 100%; border-collapse: collapse; background: var(--bg-panel); border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px var(--card-shadow); }
+.bo-product-table th, .bo-product-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
+.bo-product-table th { background: var(--bg-sidebar); color: white; font-weight: normal; }
+.bo-product-table td.num { text-align: right; }
+.bo-del-btn { background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+
+@media (max-width: 480px) {
+  .backoffice-page { padding: 18px 14px 32px; }
+  .backoffice-tab-btn { padding: 8px 12px; font-size: 13px; }
+}

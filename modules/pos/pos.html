@@ -1,0 +1,111 @@
+<div class="menu-container">
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 ค้นหาสินค้า...">
+    </div>
+    <div id="categoryContainer" class="categories"></div>
+    <div id="productGrid" class="product-grid"></div>
+</div>
+
+<div class="cart-container">
+    <div>
+        <div class="cart-header">
+            <h2>ตะกร้าสินค้า</h2>
+            <div class="cart-header-actions">
+                <button id="clearCartBtn" class="clear-btn">ล้างทั้งหมด</button>
+            </div>
+        </div>
+        <div id="cartItems" class="cart-items"></div>
+    </div>
+
+    <div class="cart-summary">
+        <div class="summary-row">
+            <span>ยอดรวมสินค้า:</span>
+            <span id="subtotalPrice">0 ฿</span>
+        </div>
+        <div class="summary-row">
+            <span>ส่วนลด (฿):</span>
+            <input type="number" id="discountInput" value="0" min="0">
+        </div>
+        <div class="total-price">
+            <span>สุทธิ:</span>
+            <span id="totalPrice">0 ฿</span>
+        </div>
+        <button id="checkoutBtn" class="checkout-btn" disabled>จัดการออเดอร์</button>
+    </div>
+</div>
+
+<!-- Modal: เลือกตัวเลือกสินค้า -->
+<div class="modal" id="optionModal">
+    <div class="modal-content">
+        <div class="modal-title" id="optionModalTitle">ชื่อสินค้า</div>
+        <div class="option-grid"></div>
+        <button class="modal-btn btn-cancel" id="cancelOptionBtn" style="width:100%;">ยกเลิก</button>
+    </div>
+</div>
+
+<!-- Modal: จัดการออเดอร์ (บันทึกโต๊ะ หรือ ชำระเงิน) -->
+<div class="modal" id="orderActionModal">
+    <div class="modal-content">
+        <div class="modal-title">สรุปรายการออเดอร์</div>
+
+        <div class="modal-field">
+            <label for="tableNameInput">ชื่อลูกค้า / หมายเลขโต๊ะ (ไม่ใส่ = ออกบิลทันที)</label>
+            <input type="text" id="tableNameInput" placeholder="เช่น โต๊ะ 1, คุณสมชาย">
+        </div>
+
+        <div class="order-summary-list" id="actionModalItemList"></div>
+
+        <div style="text-align:right; font-weight:bold; font-size:18px; margin-bottom:10px; color:#d35400;">
+            ยอดรวม: <span id="actionModalTotal">0</span> ฿
+        </div>
+
+        <div class="modal-actions">
+            <button class="modal-btn btn-save" id="saveTableBtn">💾 บันทึกโต๊ะ</button>
+            <button class="modal-btn btn-confirm" id="proceedPaymentBtn">💳 ชำระเงิน</button>
+        </div>
+        <button class="modal-btn btn-cancel" id="cancelOrderActionBtn" style="width:100%; margin-top:10px;">ย้อนกลับ</button>
+    </div>
+</div>
+
+<!-- Modal: ชำระเงิน -->
+<div class="modal" id="paymentModal">
+    <div class="modal-content">
+        <div class="modal-title">ชำระเงิน <span id="paymentBillNo" style="color:var(--text-muted); font-size:16px;"></span></div>
+
+        <div class="payment-toggle">
+            <button class="pay-btn active" id="btnCashMode">💵 เงินสด</button>
+            <button class="pay-btn" id="btnQrMode">📱 สแกน QR</button>
+        </div>
+
+        <div class="modal-field">
+            <label for="modalPayAmount">ยอดที่ต้องชำระ</label>
+            <input type="text" id="modalPayAmount" class="text-right" readonly>
+        </div>
+
+        <div id="cashInputSection">
+            <div class="modal-field">
+                <label for="cashReceived">รับเงินมา (บาท)</label>
+                <input type="number" id="cashReceived" class="text-right" placeholder="0">
+            </div>
+            <div class="change-display">เงินทอน: <span id="changeAmount">0</span> ฿</div>
+        </div>
+
+        <div id="qrInputSection" style="display:none; padding:15px 0;">
+            <p style="color:#27ae60; font-weight:bold;">✔ รอตรวจสอบสลิปโอนเงิน</p>
+        </div>
+
+        <div class="modal-actions">
+            <button class="modal-btn btn-cancel" id="cancelPaymentBtn">ยกเลิก</button>
+            <button class="modal-btn btn-confirm" id="confirmPayBtn" disabled>ยืนยันการชำระเงิน</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: ออเดอร์ที่พักไว้ (แทนหน้า "โต๊ะ" แยกของเดิม) -->
+<div class="modal" id="savedTablesModal">
+    <div class="modal-content" style="width:480px;">
+        <div class="modal-title">📝 ออเดอร์ที่พักไว้</div>
+        <div id="savedTablesContainer" class="saved-tables-list"></div>
+        <button class="modal-btn btn-cancel" id="closeSavedTablesBtn" style="width:100%; margin-top:10px;">ปิด</button>
+    </div>
+</div>

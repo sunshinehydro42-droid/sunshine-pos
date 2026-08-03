@@ -1,0 +1,171 @@
+/* =======================================================================
+   pos.css — หน้าร้าน (ขายสินค้า): เมนูสินค้า + ตะกร้า + modal ต่างๆ
+   ======================================================================= */
+
+.menu-container, .cart-container { height: 100%; overflow-y: auto; }
+
+/* Layout หลัก: เมนูซ้าย 1fr + ตะกร้าขวา 380px */
+#app-content { display: grid; grid-template-columns: 1fr 380px; height: 100%; }
+
+.menu-container { padding: 20px 22px 30px; }
+.cart-container { background: var(--bg-panel); border-left: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+
+/* ---------- ค้นหา + หมวดหมู่ ---------- */
+.search-box { margin-bottom: 16px; }
+.search-box input {
+  width: 100%; padding: 13px 16px; font-size: 15px;
+  border: 1px solid var(--border-strong); border-radius: 10px;
+  background: var(--input-bg); color: var(--text-main); outline: none;
+  transition: border-color 0.15s;
+}
+.search-box input:focus { border-color: var(--accent); }
+
+.categories { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.category-btn {
+  padding: 9px 16px; border: 1.5px solid var(--border-strong); background: var(--bg-panel);
+  color: var(--text-sub); border-radius: 20px; font-weight: 600; font-size: 13.5px; cursor: pointer;
+  transition: 0.15s;
+}
+.category-btn:hover { border-color: var(--accent); color: var(--accent); }
+.category-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ---------- กริดสินค้า ---------- */
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.product-card {
+  position: relative;
+  background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 14px;
+  padding: 18px 16px; cursor: pointer; box-shadow: 0 2px 6px var(--card-shadow);
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+}
+.product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 18px var(--card-shadow); border-color: var(--accent); }
+.product-card:active { transform: translateY(-1px) scale(0.98); }
+.product-title { font-weight: 600; font-size: 14.5px; color: var(--text-main); margin-bottom: 8px; line-height: 1.35; min-height: 38px; }
+.product-price { font-weight: 600; font-size: 16px; color: var(--accent-dark); }
+.has-option-badge {
+  position: absolute; top: 10px; right: 10px; background: var(--alt-bg); color: var(--text-muted);
+  font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 20px; border: 1px solid var(--border-color);
+}
+
+/* ---------- ตะกร้าสินค้า ---------- */
+.cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border-color); }
+.cart-header h2 { font-size: 18px; color: var(--text-main); font-family: 'Chonburi', sans-serif; font-weight: 400; }
+.clear-btn { background: none; border: 1px solid var(--border-strong); color: var(--text-muted); padding: 7px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.clear-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+.cart-items { flex-grow: 1; overflow-y: auto; min-height: 120px; }
+.cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--border-color); gap: 10px; }
+.item-name { font-weight: 600; font-size: 14px; color: var(--text-main); }
+.item-option { color: var(--accent-dark); font-weight: 500; font-size: 12.5px; margin-left: 4px; }
+.item-price { font-size: 12.5px; color: var(--text-muted); margin-top: 3px; }
+.qty-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.qty-btn {
+  width: 26px; height: 26px; border-radius: 8px; border: 1px solid var(--border-strong);
+  background: var(--alt-bg); color: var(--text-main); font-weight: 700; cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.qty-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.qty-controls span { min-width: 18px; text-align: center; font-weight: 600; font-size: 14px; }
+
+/* ---------- สรุปยอด (การ์ดเซ็นเนเจอร์: ขอบปรุแบบใบเสร็จ) ---------- */
+.cart-summary {
+  position: relative;
+  margin-top: 16px; padding-top: 20px; border-top: 1px solid var(--border-color);
+}
+.cart-summary::before {
+  content: "";
+  position: absolute; top: -1px; left: -20px; right: -20px; height: 3px;
+  background-image: radial-gradient(circle, var(--bg-body) 2.2px, transparent 2.3px);
+  background-size: 12px 3px; background-repeat: repeat-x;
+}
+.summary-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; color: var(--text-sub); }
+.summary-row input {
+  width: 100px; text-align: right; padding: 7px 10px; border: 1px solid var(--border-strong);
+  border-radius: 7px; background: var(--input-bg); color: var(--text-main); font-family: 'IBM Plex Mono', monospace;
+}
+.total-price {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 20px; font-weight: 700; color: var(--text-main); margin: 12px 0 16px;
+  padding-top: 12px; border-top: 1px dashed var(--border-strong);
+}
+.total-price span:last-child { color: var(--accent-dark); font-size: 24px; }
+
+.checkout-btn {
+  width: 100%; padding: 15px; border: none; border-radius: 12px;
+  background: var(--accent); color: #fff; font-weight: 700; font-size: 16px; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(232,134,43,0.3); transition: 0.15s;
+}
+.checkout-btn:hover:not(:disabled) { background: var(--accent-dark); transform: translateY(-1px); }
+.checkout-btn:disabled { background: var(--border-strong); color: var(--text-muted); box-shadow: none; cursor: not-allowed; }
+
+/* ================= Modals ================= */
+.modal { display: none; position: fixed; inset: 0; background: var(--modal-overlay); align-items: center; justify-content: center; z-index: 1000; }
+.modal.active, .modal[style*="flex"] { display: flex; }
+.modal-content {
+  background: var(--bg-panel); border-radius: 16px; padding: 26px; width: 400px; max-width: 90vw;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto;
+}
+.modal-title { font-size: 20px; color: var(--text-main); margin-bottom: 18px; text-align: center; }
+
+.modal-field { margin-bottom: 14px; text-align: left; }
+.modal-field label { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 5px; font-weight: 600; }
+.modal-field input, .modal-field select {
+  width: 100%; padding: 12px 13px; font-size: 15px; border: 1px solid var(--border-strong);
+  border-radius: 8px; background: var(--input-bg); color: var(--text-main); outline: none;
+}
+.modal-field input:focus { border-color: var(--accent); }
+.text-right { text-align: right; }
+
+.modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+.modal-btn { flex: 1; padding: 13px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14.5px; transition: 0.15s; }
+.modal-btn:hover { filter: brightness(1.06); }
+.modal-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-save { background: var(--accent); color: #fff; }
+.btn-confirm { background: var(--success); color: #fff; }
+.btn-cancel { background: var(--alt-bg); color: var(--text-sub); border: 1px solid var(--border-strong); }
+
+/* ---------- ตัวเลือกสินค้า ---------- */
+.option-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.option-btn {
+  display: flex; justify-content: space-between; align-items: center; padding: 14px 16px;
+  border: 1.5px solid var(--border-strong); border-radius: 10px; background: var(--bg-panel);
+  color: var(--text-main); font-weight: 600; font-size: 14.5px; cursor: pointer; transition: 0.15s;
+}
+.option-btn:hover { border-color: var(--accent); background: var(--alt-bg); }
+.option-price-tag { color: var(--accent-dark); font-weight: 600; }
+
+/* ---------- สรุปรายการใน order action modal ---------- */
+.order-summary-list { max-height: 220px; overflow-y: auto; margin-bottom: 12px; border-top: 1px dashed var(--border-strong); padding-top: 10px; }
+.order-summary-item { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--text-sub); padding: 6px 0; }
+
+/* ---------- ชำระเงิน ---------- */
+.payment-toggle { display: flex; gap: 8px; margin-bottom: 18px; }
+.pay-btn {
+  flex: 1; padding: 12px; border: 1.5px solid var(--border-strong); background: var(--bg-panel);
+  color: var(--text-sub); border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px;
+}
+.pay-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.change-display {
+  text-align: center; background: var(--alt-bg); border-radius: 10px; padding: 12px;
+  font-size: 15px; font-weight: 600; color: var(--text-main); margin-top: -4px;
+}
+.change-display span { font-family: 'IBM Plex Mono', monospace; color: var(--success); font-size: 18px; }
+
+/* ---------- ออเดอร์ที่พักไว้ ---------- */
+.saved-tables-list { display: flex; flex-direction: column; gap: 10px; max-height: 60vh; overflow-y: auto; }
+.table-card { background: var(--alt-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 16px; }
+.table-name { font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px; }
+.table-details { font-size: 13px; color: var(--text-sub); margin-bottom: 10px; line-height: 1.5; }
+.table-btn {
+  flex: 1; padding: 9px; border: none; border-radius: 8px; font-weight: 700; font-size: 13px;
+  color: #fff; cursor: pointer; background: var(--success);
+}
+.category-del-btn {
+  width: 24px; height: 24px; border-radius: 50%; border: none; background: var(--bg-panel);
+  color: var(--text-muted); cursor: pointer; line-height: 1; font-size: 15px;
+}
+.category-del-btn:hover { background: var(--danger); color: #fff; }
+
+@media (max-width: 900px) {
+  #app-content { grid-template-columns: 1fr; grid-template-rows: 1fr auto; overflow-y: auto; }
+  .cart-container { border-left: none; border-top: 1px solid var(--border-color); max-height: 55vh; }
+}

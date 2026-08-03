@@ -1,0 +1,90 @@
+<div class="backoffice-page">
+    <div class="page-title">📦 หลังบ้าน</div>
+
+    <div class="backoffice-tabs">
+        <button class="backoffice-tab-btn active" data-tab="products">🍽️ จัดการสินค้า</button>
+        <button class="backoffice-tab-btn" data-tab="history">🧾 ประวัติบิล</button>
+        <button class="backoffice-tab-btn" data-tab="report">📊 รายงานยอดขาย</button>
+    </div>
+
+    <!-- แท็บ: จัดการสินค้า -->
+    <div class="backoffice-panel active" id="panel-products">
+        <div class="bo-toolbar">
+            <button id="addCategoryBtn" class="bo-btn bo-btn-secondary">+ เพิ่มหมวดหมู่</button>
+            <button id="addProductBtn" class="bo-btn bo-btn-primary">+ เพิ่มสินค้า</button>
+        </div>
+
+        <div id="manageCategoryList" class="bo-category-list"></div>
+
+        <div class="bo-section-title">🎛️ ชุดตัวเลือกเพิ่มเติม (แยกตามหมวดหมู่)</div>
+        <div id="optionGroupList" class="bo-option-group-list"></div>
+
+        <table class="bo-product-table">
+            <thead>
+                <tr>
+                    <th>ชื่อสินค้า</th>
+                    <th>หมวดหมู่</th>
+                    <th style="text-align:right;">ราคา</th>
+                    <th style="text-align:center;">มีตัวเลือก</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="manageProductList"></tbody>
+        </table>
+    </div>
+
+    <!-- แท็บ: ประวัติบิล -->
+    <div class="backoffice-panel" id="panel-history">
+        <div id="historyContainer"></div>
+    </div>
+
+    <!-- แท็บ: รายงานยอดขาย -->
+    <div class="backoffice-panel" id="panel-report">
+        <div class="report-tabs">
+            <button class="report-tab-btn active" data-period="day">วันนี้</button>
+            <button class="report-tab-btn" data-period="7day">7 วัน</button>
+            <button class="report-tab-btn" data-period="30day">30 วัน</button>
+            <button class="report-tab-btn" data-period="custom">กำหนดเอง</button>
+        </div>
+
+        <div class="custom-range-panel" id="customRangePanel" style="display:none;">
+            <div class="modal-field" style="display:inline-block; margin-right:12px;">
+                <label for="customStartDate">จากวันที่</label>
+                <input type="date" id="customStartDate">
+            </div>
+            <div class="modal-field" style="display:inline-block;">
+                <label for="customEndDate">ถึงวันที่</label>
+                <input type="date" id="customEndDate">
+            </div>
+        </div>
+
+        <div class="report-summary-cards">
+            <div class="report-card">
+                <div class="report-card-label" id="reportPeriodLabel">ยอดขายวันนี้</div>
+                <div class="report-card-value highlight" id="reportTotalRevenue">0 ฿</div>
+            </div>
+            <div class="report-card">
+                <div class="report-card-label">จำนวนบิล</div>
+                <div class="report-card-value" id="reportBillCount">0</div>
+            </div>
+            <div class="report-card">
+                <div class="report-card-label">จำนวนสินค้าที่ขาย (ชิ้น)</div>
+                <div class="report-card-value" id="reportItemCount">0</div>
+            </div>
+        </div>
+
+        <div class="report-table-wrap">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>สินค้าขายดี</th>
+                        <th style="text-align:right;">จำนวน</th>
+                        <th style="text-align:right;">ยอดขาย</th>
+                    </tr>
+                </thead>
+                <tbody id="reportBestSellerBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

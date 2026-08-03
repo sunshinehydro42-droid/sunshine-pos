@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunshine POS - Modular</title>
+
+    <!-- ฟอนต์: Chonburi (หัวข้อ/ป้าย) + IBM Plex Sans Thai (เนื้อหา) + IBM Plex Mono (ตัวเลข/ราคา) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chonburi&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="global.css">
+    <!-- ที่ไว้แปะ CSS ของแต่ละ Module อัตโนมัติ -->
+    <link id="module-css" rel="stylesheet" href="">
+</head>
+<body>
+
+    <!-- แถบเมนูซ้ายมือ (คงที่ตลอด) -->
+    <aside class="sidebar">
+        <button class="nav-btn" data-page="pos">🛒<span>หน้าร้าน</span></button>
+        <button class="nav-btn" data-page="backoffice">📦<span>หลังบ้าน</span></button>
+        <button class="nav-btn" data-page="shift">⏱️<span>ระบบกะ</span></button>
+
+        <!-- ปุ่มลัดเปิด "ออเดอร์ที่พักไว้" — ไม่ใช่หน้าเต็ม แค่พาไปหน้าร้านแล้วเปิด modal ทันที -->
+        <button class="nav-btn" id="sidebarSavedTablesBtn" title="ออเดอร์ที่พักไว้">
+            🪑<span>พักออเดอร์</span>
+            <span class="nav-badge" id="sidebarSavedTablesBadge">0</span>
+        </button>
+
+        <button class="nav-btn" data-page="settings">⚙️<span>ตั้งค่า</span></button>
+
+        <!-- ปุ่มสลับธีมสว่าง/มืด — ไม่ใช่การสลับหน้า แค่ toggle class บน body -->
+        <button class="nav-btn" id="themeToggleBtn" title="สลับธีมสว่าง/มืด">
+            🌓<span>ธีม</span>
+        </button>
+    </aside>
+
+    <!-- พื้นที่แสดงผลเนื้อหา (จะเปลี่ยนไปตามเมนูที่กด) -->
+    <main id="app-content" class="main-content">
+        <!-- เนื้อหาจาก pos.html, backoffice.html จะมาโผล่ที่นี่ -->
+    </main>
+
+    <!-- ต้องใส่ type="module" เพื่อให้ใช้ระบบ import/export ได้ -->
+    <script type="module" src="main.js"></script>
+</body>
+</html>

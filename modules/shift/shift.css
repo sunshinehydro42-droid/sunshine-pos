@@ -1,0 +1,203 @@
+/* =======================================================================
+   shift.css — สไตล์เฉพาะของโมดูล "ระบบกะการทำงาน"
+   ใช้ token ร่วมจาก global.css
+   ======================================================================= */
+
+.shift-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 30px 24px 40px;
+  color: var(--text-main);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.shift-page-header h2 {
+  font-size: 24px;
+  margin-bottom: 6px;
+  color: var(--text-main);
+}
+.shift-page-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 26px;
+  line-height: 1.5;
+}
+
+/* ---------- การ์ดสถานะกะ (ลายเซ็นเฉพาะ: ขอบปรุแบบใบเสร็จ) ---------- */
+.shift-card { margin-bottom: 32px; }
+
+.shift-status {
+  position: relative;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 30px 26px;
+  text-align: center;
+  box-shadow: 0 4px 18px var(--card-shadow);
+  border-top: 4px solid var(--text-muted);
+  overflow: hidden;
+}
+.shift-status::after {
+  content: "";
+  position: absolute; top: 3px; left: 0; right: 0; height: 3px;
+  background-image: radial-gradient(circle, var(--bg-body) 2.2px, transparent 2.3px);
+  background-size: 12px 3px; background-repeat: repeat-x;
+}
+.shift-status-open { border-top-color: var(--success); }
+
+.shift-status-icon { font-size: 36px; margin-bottom: 8px; }
+.shift-status-title {
+  font-size: 19px;
+  margin-bottom: 20px;
+  color: var(--text-main);
+}
+
+.shift-field { text-align: left; margin-bottom: 14px; }
+.shift-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+.shift-field input {
+  width: 100%;
+  padding: 12px 13px;
+  font-size: 15px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: var(--text-main);
+  outline: none;
+}
+.shift-field input:focus { border-color: var(--accent); }
+
+.shift-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.shift-info-item {
+  background: var(--alt-bg);
+  border-radius: 12px;
+  padding: 13px 15px;
+  text-align: left;
+}
+.shift-info-item span {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.shift-info-item b { font-size: 15px; color: var(--text-main); }
+
+/* ---------- ปุ่มทั่วไปของโมดูลนี้ ---------- */
+.shift-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: filter 0.15s, transform 0.1s;
+}
+.shift-btn:hover { filter: brightness(1.07); }
+.shift-btn:active { transform: scale(0.98); }
+.shift-btn-start { background: var(--success); color: #fff; box-shadow: 0 4px 12px rgba(47,158,68,0.3); }
+.shift-btn-close { background: var(--danger); color: #fff; }
+.shift-btn-cancel { background: var(--alt-bg); color: var(--text-main); border: 1px solid var(--border-strong); }
+.shift-btn-confirm { background: var(--success); color: #fff; }
+
+/* ---------- ประวัติกะ ---------- */
+.shift-history-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text-main);
+}
+.shift-history-empty {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 26px 0;
+}
+.shift-history-item {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 1px 4px var(--card-shadow);
+}
+.shift-history-main { display: flex; flex-direction: column; gap: 2px; }
+.shift-history-main b { color: var(--text-main); font-size: 14px; }
+.shift-history-main span { font-size: 12px; color: var(--text-muted); }
+.shift-history-nums {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  font-size: 13px;
+  flex-wrap: wrap;
+  color: var(--text-sub);
+}
+
+.diff-over  { color: var(--accent-dark); font-weight: 700; }
+.diff-under { color: var(--danger); font-weight: 700; }
+.diff-zero  { color: var(--success); font-weight: 700; }
+
+/* ---------- Modal: ปิดกะ ---------- */
+.shift-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--modal-overlay);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.shift-modal.active { display: flex; }
+
+.shift-modal-content {
+  background: var(--bg-panel);
+  border-radius: 16px;
+  padding: 26px;
+  width: 380px;
+  max-width: 90vw;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.28);
+}
+.shift-modal-title {
+  font-size: 20px;
+  margin-bottom: 16px;
+  color: var(--text-main);
+}
+
+.shift-preview {
+  background: var(--alt-bg);
+  border-radius: 10px;
+  padding: 13px 15px;
+  margin-bottom: 16px;
+}
+.shift-preview-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 4px 0;
+  color: var(--text-sub);
+}
+.shift-preview-row b { color: var(--text-main); font-family: 'IBM Plex Mono', monospace; }
+
+.shift-modal-actions { display: flex; gap: 10px; margin-top: 6px; }
+.shift-modal-actions .shift-btn { flex: 1; }
+
+@media (max-width: 480px) {
+  .shift-page { padding: 20px 14px 32px; }
+  .shift-info-grid { grid-template-columns: 1fr 1fr; }
+  .shift-modal-content { width: 92vw; padding: 20px; }
+}

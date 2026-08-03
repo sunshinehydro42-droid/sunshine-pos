@@ -1,0 +1,147 @@
+/* =======================================================================
+   global.css — โหลดอยู่ตลอดผ่าน <link> ใน index.html (ไม่ถูกสลับเหมือน #module-css)
+   ดีไซน์ใหม่: โทนกรมท่า + ส้มอำพัน แรงบันดาลใจจากป้ายร้านค้า/ใบเสร็จ
+   ======================================================================= */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'IBM Plex Sans Thai', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* หัวข้อ/ชื่อหน้า ใช้ฟอนต์ทรงป้ายร้านค้าเพื่อสร้างเอกลักษณ์ */
+.page-title,
+.shift-page-header h2,
+.shift-status-title,
+.modal-title,
+.shift-modal-title {
+  font-family: 'Chonburi', 'Segoe UI', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+
+/* ตัวเลขเงิน/ราคา ใช้ฟอนต์ตัวเลขเรียงชิดแบบใบเสร็จ */
+.product-price, .item-price, .total-price, .summary-row span:last-child,
+.report-card-value, .report-table td.num, .bo-product-table td.num,
+.history-bill-summary .bs-total, .table-details b, .shift-info-item b,
+.option-price-tag, #modalPayAmount, #changeAmount, #actionModalTotal,
+.nav-badge {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+/* ================= Theme tokens (โหมดสว่าง/มืด) ================= */
+:root {
+  --bg-body: #EEF1F4;
+  --bg-panel: #ffffff;
+  --bg-sidebar: #16202B;
+  --bg-sidebar-hover: #1F2E3D;
+  --accent: #E8862B;
+  --accent-dark: #C96F1D;
+  --text-main: #1B2430;
+  --text-sub: #4B5563;
+  --text-muted: #8A93A0;
+  --border-color: #E4E7EB;
+  --border-strong: #D3D8DE;
+  --card-shadow: rgba(20,30,45,0.07);
+  --input-bg: #ffffff;
+  --modal-overlay: rgba(15,20,28,0.55);
+  --alt-bg: #F5F7F9;
+  --danger: #E5484D;
+  --success: #2F9E44;
+}
+body.dark-mode {
+  --bg-body: #10151C;
+  --bg-panel: #1A222C;
+  --bg-sidebar: #0B0F14;
+  --bg-sidebar-hover: #17202A;
+  --accent: #F0964A;
+  --accent-dark: #E8862B;
+  --text-main: #E7EAEE;
+  --text-sub: #B8C0CB;
+  --text-muted: #7C8794;
+  --border-color: #262F3A;
+  --border-strong: #303B48;
+  --card-shadow: rgba(0,0,0,0.4);
+  --input-bg: #202A35;
+  --modal-overlay: rgba(0,0,0,0.72);
+  --alt-bg: #1F2833;
+  --danger: #EF6672;
+  --success: #3DB755;
+}
+
+html, body { height: 100%; }
+body { display: flex; height: 100vh; background-color: var(--bg-body); overflow: hidden; transition: background-color 0.2s; color: var(--text-main); }
+
+/* ================= แถบเมนูซ้าย ================= */
+.sidebar {
+  width: 84px;
+  background: var(--bg-sidebar);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 22px;
+  gap: 12px;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+.nav-btn {
+  position: relative;
+  background: none;
+  border: none;
+  color: #C7CFD9;
+  width: 62px;
+  height: 62px;
+  border-radius: 14px;
+  font-size: 23px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, transform 0.12s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.nav-btn span { font-size: 10.5px; font-weight: 500; }
+.nav-btn:hover { background: var(--bg-sidebar-hover); color: #fff; }
+.nav-btn:active { transform: scale(0.94); }
+.nav-btn.active { background: var(--accent); color: #fff; box-shadow: 0 3px 10px rgba(232,134,43,0.35); }
+.nav-btn:disabled { opacity: 0.28; cursor: not-allowed; }
+.nav-btn:disabled:hover { background: none; color: #C7CFD9; }
+
+.nav-badge {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 3px;
+  border-radius: 9px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 17px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--bg-sidebar);
+}
+
+.main-content { flex-grow: 1; position: relative; overflow: hidden; background: var(--bg-body); }
+
+/* ================= Responsive ================= */
+@media (max-width: 900px) and (orientation: portrait) {
+  body { flex-direction: column-reverse; }
+  .sidebar { width: 100%; height: 66px; flex-direction: row; justify-content: space-around; padding: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.15); z-index: 20; }
+  .nav-btn { width: 56px; height: 56px; border-radius: 12px; }
+  .main-content { height: calc(100% - 66px); }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .sidebar { width: 64px; padding-top: 10px; gap: 8px; }
+  .nav-btn { width: 48px; height: 48px; font-size: 18px; }
+  .nav-btn span { font-size: 9px; }
+}
+
+@media (max-width: 480px) {
+  .nav-btn span { display: none; }
+  .nav-btn { width: 46px; height: 46px; font-size: 20px; }
+}

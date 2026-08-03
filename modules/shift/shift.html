@@ -1,0 +1,41 @@
+<div class="shift-page">
+
+  <div class="shift-page-header">
+    <h2>⏱️ ระบบกะการทำงาน</h2>
+    <p class="shift-page-sub">เปิดกะเพื่อบันทึกเงินสดตั้งต้นในลิ้นชัก แล้วปิดกะเมื่อสิ้นสุดการทำงานเพื่อสรุปยอด</p>
+  </div>
+
+  <!-- การ์ดสถานะกะปัจจุบัน: JS จะเรนเดอร์เนื้อหาตามสถานะ (ยังไม่เปิดกะ / กำลังเปิดกะอยู่) -->
+  <div id="shiftStatusCard" class="shift-card"></div>
+
+  <!-- ประวัติกะที่ปิดไปแล้ว -->
+  <div class="shift-history-section">
+    <h3>📋 ประวัติกะที่ผ่านมา</h3>
+    <div id="shiftHistoryContainer" class="shift-history-list"></div>
+  </div>
+
+  <!-- Modal: ฟอร์มปิดกะ -->
+  <div class="shift-modal" id="closeShiftModal">
+    <div class="shift-modal-content">
+      <div class="shift-modal-title">🔒 ปิดกะการทำงาน</div>
+
+      <div class="shift-field">
+        <label for="shiftSalesInput">ยอดขายระหว่างกะ (บาท, ไม่บังคับ)</label>
+        <input type="number" id="shiftSalesInput" min="0" placeholder="0">
+      </div>
+
+      <div class="shift-field">
+        <label for="closeCashInput">เงินสดที่นับได้ปลายกะ (บาท)</label>
+        <input type="number" id="closeCashInput" min="0" placeholder="0">
+      </div>
+
+      <div id="closeShiftPreview" class="shift-preview"></div>
+
+      <div class="shift-modal-actions">
+        <button id="cancelCloseShiftBtn" class="shift-btn shift-btn-cancel">ยกเลิก</button>
+        <button id="confirmCloseShiftBtn" class="shift-btn shift-btn-confirm">ยืนยันปิดกะ</button>
+      </div>
+    </div>
+  </div>
+
+</div>
