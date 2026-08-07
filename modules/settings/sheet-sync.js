@@ -1,8 +1,7 @@
 // sheet-sync.js — ยิง request จริงไปหา Google Apps Script Web App
-// ใช้ร่วมกันทั้งหน้า "ตั้งค่า" (ปุ่มทดสอบการเชื่อมต่อ), หน้าขาย (ดึงสินค้า/หมวดหมู่) และ payment.js (ส่งข้อมูลบิลตอนชำระเงินสำเร็จ)
 
 // 1. ฟังก์ชันดึงรายการสินค้าและหมวดหมู่ (Master Data) จาก Google Sheet
-export async function fetchMasterData(url) {
+async function fetchMasterData(url) {
     if (!url) return { ok: false, message: 'ยังไม่ได้ตั้งค่า Web App URL', categories: [], items: [] };
 
     try {
@@ -29,7 +28,7 @@ export async function fetchMasterData(url) {
 }
 
 // 2. ฟังก์ชันส่งข้อมูลไปยัง Google Sheet (บันทึกยอดขาย / ตัดสต็อก / ทดสอบการเชื่อมต่อ)
-export async function callSheetWebApp(url, action, payload = {}) {
+async function callSheetWebApp(url, action, payload = {}) {
     if (!url) return { ok: false, message: 'ยังไม่ได้ตั้งค่า Web App URL' };
 
     try {
@@ -44,3 +43,7 @@ export async function callSheetWebApp(url, action, payload = {}) {
         return { ok: false, message: 'เชื่อมต่อไม่สำเร็จ (เช็ค URL หรือการตั้งค่า Deploy ของ Apps Script): ' + err.message };
     }
 }
+
+// 📌 ประกาศเป็นตัวแปร Global ให้ไฟล์อื่น (เช่น settings.js, payment.js) เรียกใช้ได้ทันที
+window.fetchMasterData = fetchMasterData;
+window.callSheetWebApp = callSheetWebApp;
