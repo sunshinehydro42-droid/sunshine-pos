@@ -87,12 +87,13 @@ function processPayment() {
     alert(`ชำระเงินสำเร็จ! เลขบิล ${billNo}`);
 }
 
-// ส่งรายการขายในบิลนี้ไป Google Sheet (Sales Database เท่านั้น — คนละ URL กับ Master DB)
+// ส่งรายการขายในบิลนี้ไป Google Sheet (ใช้ URL เดียวกับที่หน้าตั้งค่าตั้งไว้ ตอนนี้
+// Master DB กับ Sales DB รวมอยู่ในไฟล์เดียว/สคริปต์เดียวแล้ว)
 async function syncBillToSheet(bill) {
-    const url = localStorage.getItem('pos_sales_url');
+    const url = localStorage.getItem('pos_sheet_url');
 
     if (!url) {
-        console.warn('⚠️ ยังไม่ได้ตั้งค่า Sales Database URL กรุณาใส่ URL ในหน้าตั้งค่า (ช่อง Sales Database)');
+        console.warn('⚠️ ยังไม่ได้ตั้งค่า Google Sheet URL กรุณาใส่ URL ในหน้าตั้งค่า');
         return;
     }
 
@@ -111,7 +112,7 @@ async function syncBillToSheet(bill) {
     const result = await callSheetWebApp(url, 'addSale', { rows });
 
     if (result.ok) {
-        console.log('✅ บันทึกยอดขายลง Sales Database สำเร็จ บิลเลขที่:', bill.billNo, '-', result.message);
+        console.log('✅ บันทึกยอดขายลง Google Sheet สำเร็จ บิลเลขที่:', bill.billNo, '-', result.message);
     } else {
         console.error('❌ บันทึกยอดขายไม่สำเร็จ บิลเลขที่:', bill.billNo, '-', result.message);
     }

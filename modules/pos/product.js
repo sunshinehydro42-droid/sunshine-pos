@@ -20,9 +20,9 @@ export async function initProductView() {
 // ดึงข้อมูลล่าสุดจาก Master DB มาอัปเดต state + เซฟลง localStorage (แคช) แล้ว
 // re-render หน้าจอถ้าตอนนี้อยู่หน้าขายพอดี (เช็ค DOM ก่อน เผื่อเรียกจากหน้าอื่น)
 export async function syncMasterData() {
-    const webAppUrl = localStorage.getItem('pos_master_url');
+    const webAppUrl = localStorage.getItem('pos_sheet_url');
     if (!webAppUrl) {
-        return { ok: false, message: 'ยังไม่ได้ตั้งค่า Master Database URL ในหน้าตั้งค่า' };
+        return { ok: false, message: 'ยังไม่ได้ตั้งค่า Google Sheet URL ในหน้าตั้งค่า' };
     }
 
     const res = await fetchMasterData(webAppUrl);
