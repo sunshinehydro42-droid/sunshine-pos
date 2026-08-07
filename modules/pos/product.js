@@ -1,7 +1,7 @@
 // product.js — แสดง/กรองสินค้าและหมวดหมู่ฝั่งขาย (อ่านอย่างเดียว)
 import { state, saveState } from '../../state.js';
 import { handleProductClick } from './cart.js';
-import { fetchMasterData } from '../setting/sheet-sync.js';
+import { fetchMasterData } from '../settings/sheet-sync.js';
 
 let activeCategory = 'ทั้งหมด';
 
