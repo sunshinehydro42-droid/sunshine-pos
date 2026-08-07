@@ -1,5 +1,5 @@
 
-@@ -1,28 +1,17 @@
+
 <div class="settings-page">
     <div class="page-title">⚙️ ตั้งค่า</div>
 
