@@ -1,7 +1,7 @@
 // product.js — แสดง/กรองสินค้าและหมวดหมู่ฝั่งขาย (อ่านอย่างเดียว)
-import { state } from '../../state.js';
+import { state, saveState } from '../../state.js';
 import { handleProductClick } from './cart.js';
-import { fetchMasterData } from '../setting/sheet-sync.js'; // 1. นำเข้าฟังก์ชันดึงข้อมูลจาก sheet-sync
+import { fetchMasterData } from '../setting/sheet-sync.js';
 
 let activeCategory = 'ทั้งหมด';
 
@@ -10,34 +10,41 @@ export async function initProductView() {
     document.getElementById('productGrid').addEventListener('click', onProductGridClick);
     document.getElementById('searchInput').addEventListener('input', renderProducts);
 
-    // 2. ดึง Web App URL ของ Master DB ที่ตั้งค่าไว้ในหน้าตั้งค่า (คนละ key กับ Sales DB)
-    const webAppUrl = localStorage.getItem('pos_master_url');
-
-    if (webAppUrl) {
-        // โชว์ข้อความกำลังโหลดชั่วคราว
-        document.getElementById('productGrid').innerHTML = `<div style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:30px 0;">กำลังโหลดสินค้าจาก Google Sheet...</div>`;
-
-        // 3. ยิงดึงข้อมูล Master Data จาก Sheet
-        const res = await fetchMasterData(webAppUrl);
-
-        if (res.ok) {
-            // อัปเดตข้อมูลลง state
-            if (res.categories.length > 0) {
-                state.categories = res.categories.map(c => c.name || c);
-            }
-            if (res.items.length > 0) {
-                state.products = res.items;
-            }
-        } else {
-            console.warn('ดึงข้อมูลจาก Sheet ไม่สำเร็จ ใช้ข้อมูลเดิมใน state:', res.message);
-        }
-    } else {
-        console.warn('⚠️ ยังไม่ได้ตั้งค่า Master Database URL — ใช้ข้อมูลสินค้า/หมวดหมู่ที่มีอยู่ในเครื่องแทน');
-    }
-
-    // 4. Render หน้าจอปกติ
+    // Render ทันทีจากแคชในเครื่อง (state.products/categories ที่โหลดจาก localStorage
+    // ตอน state.js import ครั้งแรก) — ไม่รอเน็ตอีกต่อไป ทำงานได้แม้ออฟไลน์
     renderCategories();
     renderProducts();
+}
+
+// เรียกจากปุ่ม "Sync" (หน้าตั้งค่า หรือหน้าขาย) เท่านั้น — ไม่ยิงอัตโนมัติตอนเปิดหน้า
+// ดึงข้อมูลล่าสุดจาก Master DB มาอัปเดต state + เซฟลง localStorage (แคช) แล้ว
+// re-render หน้าจอถ้าตอนนี้อยู่หน้าขายพอดี (เช็ค DOM ก่อน เผื่อเรียกจากหน้าอื่น)
+export async function syncMasterData() {
+    const webAppUrl = localStorage.getItem('pos_master_url');
+    if (!webAppUrl) {
+        return { ok: false, message: 'ยังไม่ได้ตั้งค่า Master Database URL ในหน้าตั้งค่า' };
+    }
+
+    const res = await fetchMasterData(webAppUrl);
+    if (!res.ok) {
+        return { ok: false, message: res.message };
+    }
+
+    if (res.categories.length > 0) {
+        state.categories = res.categories.map(c => c.name || c);
+        saveState('pos_categories', state.categories);
+    }
+    if (res.items.length > 0) {
+        state.products = res.items;
+        saveState('pos_products', state.products);
+    }
+
+    if (document.getElementById('productGrid')) {
+        renderCategories();
+        renderProducts();
+    }
+
+    return { ok: true, message: `ซิงค์สำเร็จ: ${state.categories.length} หมวดหมู่, ${state.products.length} สินค้า` };
 }
 
 function onCategoryClick(e) {

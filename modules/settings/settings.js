@@ -4,7 +4,11 @@
 //   - Sales Database: ให้ payment.js บันทึกยอดขายหลังชำระเงินสำเร็จ (callSheetWebApp action:'addSale')
 // ก่อนหน้านี้มีช่องกรอกเดียว (pos_script_url) ทำให้ URL ของสองฐานข้อมูลทับกันเอง
 // จึงแยกเป็นคนละ key: pos_master_url และ pos_sales_url
+//
+// ระบบตอนนี้เป็นแบบ offline-first: หน้าขายจะไม่ยิงไป Master DB อัตโนมัติอีกแล้ว
+// ต้องกดปุ่ม "Sync" ด้านล่างเพื่อดึงข้อมูลล่าสุดมาเก็บไว้ในแคช (localStorage) เอง
 import { callSheetWebApp } from './sheet-sync.js';
+import { syncMasterData } from '../Pos/product.js';
 
 const CONFIGS = [
     {
@@ -36,6 +40,26 @@ export function initSettings() {
         document.getElementById(cfg.saveBtnId)?.addEventListener('click', () => saveUrl(cfg));
         document.getElementById(cfg.testBtnId)?.addEventListener('click', () => testConnection(cfg));
     });
+
+    document.getElementById('syncMasterBtn')?.addEventListener('click', runMasterSync);
+}
+
+async function runMasterSync() {
+    const btn = document.getElementById('syncMasterBtn');
+    const originalLabel = btn.innerText;
+    btn.disabled = true;
+    btn.innerText = '🔄 กำลังซิงค์...';
+
+    const result = await syncMasterData();
+
+    btn.disabled = false;
+    btn.innerText = originalLabel;
+
+    if (result.ok) {
+        alert('✅ ' + result.message);
+    } else {
+        alert('❌ ซิงค์ไม่สำเร็จ\n\n' + result.message);
+    }
 }
 
 function saveUrl(cfg) {
