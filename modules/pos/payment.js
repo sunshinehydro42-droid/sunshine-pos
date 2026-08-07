@@ -2,6 +2,7 @@
 import { state, saveState } from '../../state.js';
 import { openModal, closeModal } from '../../ui.js';
 import { getCartTotals, clearCart } from './cart.js';
+import { callSheetWebApp } from '../setting/sheet-sync.js';
 
 let currentPaymentData = null;
 let paymentMode = 'cash';
@@ -86,20 +87,16 @@ function processPayment() {
     alert(`ชำระเงินสำเร็จ! เลขบิล ${billNo}`);
 }
 
-// ส่งรายการขายในบิลนี้ไป Google Sheet
+// ส่งรายการขายในบิลนี้ไป Google Sheet (Sales Database เท่านั้น — คนละ URL กับ Master DB)
 async function syncBillToSheet(bill) {
-    // 1. ดึง URL จากทุก Key ที่เป็นไปได้ เพื่อป้องกันปัญหาดึง URL ไม่เจอ
-    const url = localStorage.getItem('webAppUrl') || 
-                localStorage.getItem('pos_script_url') || 
-                localStorage.getItem('sheet_url') || 
-                state.webAppUrl;
+    const url = localStorage.getItem('pos_sales_url');
 
     if (!url) {
-        console.warn('⚠️ ไม่พบ Web App URL ในระบบ กรุณาใส่ URL ในหน้าตั้งค่า');
+        console.warn('⚠️ ยังไม่ได้ตั้งค่า Sales Database URL กรุณาใส่ URL ในหน้าตั้งค่า (ช่อง Sales Database)');
         return;
     }
 
-    // 2. แปลงรายการสินค้าให้ตรงกับฟังก์ชัน addSale ใน Apps Script
+    // แปลงรายการสินค้าให้ตรงกับ addSaleRows() ใน Sales DB script
     const rows = bill.items.map(item => ({
         date: bill.date,
         category: item.category || '',
@@ -109,23 +106,13 @@ async function syncBillToSheet(bill) {
         lineTotal: Number(item.price || 0) * Number(item.qty || 1)
     }));
 
-    const payload = {
-        action: 'addSale',
-        rows: rows
-    };
+    // ใช้ callSheetWebApp() ตัวกลางร่วมกับหน้าตั้งค่า (ไม่ใช้ no-cors) จึงอ่าน
+    // ผลลัพธ์จริงจาก Apps Script ได้ — รู้ทันทีว่าบันทึกสำเร็จหรือ error อะไร
+    const result = await callSheetWebApp(url, 'addSale', { rows });
 
-    // 3. ยิงไปที่ Google Apps Script
-    try {
-        await fetch(url, {
-            method: 'POST',
-            mode: 'no-cors', // ใช้ no-cors เพื่อป้องกันปัญหา CORS บล็อกฝั่งเบราว์เซอร์
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-        console.log('✅ บันทึกยอดขายลง Google Sheet เรียบร้อย บิลเลขที่:', bill.billNo);
-    } catch (err) {
-        console.error('❌ ส่งข้อมูลไป Google Sheet ไม่สำเร็จ:', err);
+    if (result.ok) {
+        console.log('✅ บันทึกยอดขายลง Sales Database สำเร็จ บิลเลขที่:', bill.billNo, '-', result.message);
+    } else {
+        console.error('❌ บันทึกยอดขายไม่สำเร็จ บิลเลขที่:', bill.billNo, '-', result.message);
     }
 }

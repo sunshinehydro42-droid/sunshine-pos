@@ -59,6 +59,7 @@ function renderReport() {
     let totalRevenue = 0;
     let totalItemCount = 0;
     const itemStats = {};
+    const categoryStats = {};
 
     filteredBills.forEach(b => {
         totalRevenue += b.total;
@@ -68,12 +69,34 @@ function renderReport() {
             if (!itemStats[key]) itemStats[key] = { qty: 0, revenue: 0 };
             itemStats[key].qty += i.qty;
             itemStats[key].revenue += i.price * i.qty;
+
+            const catKey = i.category || 'ไม่ระบุหมวดหมู่';
+            if (!categoryStats[catKey]) categoryStats[catKey] = { qty: 0, revenue: 0 };
+            categoryStats[catKey].qty += i.qty;
+            categoryStats[catKey].revenue += i.price * i.qty;
         });
     });
 
     document.getElementById('reportTotalRevenue').innerText = totalRevenue + ' ฿';
     document.getElementById('reportBillCount').innerText = filteredBills.length;
     document.getElementById('reportItemCount').innerText = totalItemCount;
+
+    const sortedCategories = Object.keys(categoryStats)
+        .map(k => ({ name: k, qty: categoryStats[k].qty, revenue: categoryStats[k].revenue }))
+        .sort((a, b) => b.revenue - a.revenue);
+
+    const categoryBody = document.getElementById('reportCategoryBody');
+    if (sortedCategories.length === 0) {
+        categoryBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted); padding:20px;">ไม่มีข้อมูลการขายในช่วงเวลานี้</td></tr>`;
+    } else {
+        categoryBody.innerHTML = sortedCategories.map(cat => `
+            <tr>
+                <td>${cat.name}</td>
+                <td class="num">${cat.qty}</td>
+                <td class="num">${cat.revenue} ฿</td>
+            </tr>
+        `).join('');
+    }
 
     const sortedItems = Object.keys(itemStats)
         .map(k => ({ name: k, qty: itemStats[k].qty, revenue: itemStats[k].revenue }))

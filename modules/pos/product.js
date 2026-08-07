@@ -1,7 +1,7 @@
 // product.js — แสดง/กรองสินค้าและหมวดหมู่ฝั่งขาย (อ่านอย่างเดียว)
 import { state } from '../../state.js';
 import { handleProductClick } from './cart.js';
-import { fetchMasterData } from '../settings/sheet-sync.js'; // 1. นำเข้าฟังก์ชันดึงข้อมูลจาก sheet-sync
+import { fetchMasterData } from '../setting/sheet-sync.js'; // 1. นำเข้าฟังก์ชันดึงข้อมูลจาก sheet-sync
 
 let activeCategory = 'ทั้งหมด';
 
@@ -10,8 +10,8 @@ export async function initProductView() {
     document.getElementById('productGrid').addEventListener('click', onProductGridClick);
     document.getElementById('searchInput').addEventListener('input', renderProducts);
 
-    // 2. ดึง Web App URL ที่เคยตั้งค่าไว้ใน localStorage
-    const webAppUrl = localStorage.getItem('webAppUrl') || state.webAppUrl;
+    // 2. ดึง Web App URL ของ Master DB ที่ตั้งค่าไว้ในหน้าตั้งค่า (คนละ key กับ Sales DB)
+    const webAppUrl = localStorage.getItem('pos_master_url');
 
     if (webAppUrl) {
         // โชว์ข้อความกำลังโหลดชั่วคราว
@@ -31,6 +31,8 @@ export async function initProductView() {
         } else {
             console.warn('ดึงข้อมูลจาก Sheet ไม่สำเร็จ ใช้ข้อมูลเดิมใน state:', res.message);
         }
+    } else {
+        console.warn('⚠️ ยังไม่ได้ตั้งค่า Master Database URL — ใช้ข้อมูลสินค้า/หมวดหมู่ที่มีอยู่ในเครื่องแทน');
     }
 
     // 4. Render หน้าจอปกติ

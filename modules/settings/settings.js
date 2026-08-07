@@ -1,28 +1,56 @@
 // settings.js — หน้าตั้งค่าระบบ (เดิมคือแท็บ "ตั้งค่า" ในหลังบ้าน แยกออกมาเป็นหน้าของตัวเองใน sidebar)
-// ตอนนี้มีแค่การเชื่อมต่อ Google Sheet (Google Apps Script Web App) — ยิง request จริงแล้ว ไม่ใช่จำลอง
+// เชื่อมต่อ Google Sheet 2 ตัวแยกกัน:
+//   - Master Database: ให้หน้าขายดึงหมวดหมู่/สินค้า/ตัวเลือกมาสร้างปุ่ม (fetchMasterData)
+//   - Sales Database: ให้ payment.js บันทึกยอดขายหลังชำระเงินสำเร็จ (callSheetWebApp action:'addSale')
+// ก่อนหน้านี้มีช่องกรอกเดียว (pos_script_url) ทำให้ URL ของสองฐานข้อมูลทับกันเอง
+// จึงแยกเป็นคนละ key: pos_master_url และ pos_sales_url
 import { callSheetWebApp } from './sheet-sync.js';
 
-export function initSettings() {
-    const urlInput = document.getElementById('scriptUrlInput');
-    urlInput.value = localStorage.getItem('pos_script_url') || '';
+const CONFIGS = [
+    {
+        storageKey: 'pos_master_url',
+        // ค่าเก่าก่อนแยก 2 URL เคยถูกเก็บไว้ที่ pos_script_url — ใช้เป็นค่าเริ่มต้น
+        // ให้ช่อง Master ถ้ายังไม่เคยตั้ง pos_master_url มาก่อน (กันต้องกรอกใหม่ทุกคน)
+        legacyKey: 'pos_script_url',
+        inputId: 'masterScriptUrlInput',
+        testBtnId: 'testMasterBtn',
+        saveBtnId: 'saveMasterBtn'
+    },
+    {
+        storageKey: 'pos_sales_url',
+        legacyKey: null,
+        inputId: 'salesScriptUrlInput',
+        testBtnId: 'testSalesBtn',
+        saveBtnId: 'saveSalesBtn'
+    }
+];
 
-    document.getElementById('saveSheetBtn').addEventListener('click', saveSheetUrl);
-    document.getElementById('testSheetBtn').addEventListener('click', testSheetConnection);
+export function initSettings() {
+    CONFIGS.forEach(cfg => {
+        const input = document.getElementById(cfg.inputId);
+        if (!input) return;
+
+        input.value = localStorage.getItem(cfg.storageKey)
+            || (cfg.legacyKey ? (localStorage.getItem(cfg.legacyKey) || '') : '');
+
+        document.getElementById(cfg.saveBtnId)?.addEventListener('click', () => saveUrl(cfg));
+        document.getElementById(cfg.testBtnId)?.addEventListener('click', () => testConnection(cfg));
+    });
 }
 
-function saveSheetUrl() {
-    const urlInput = document.getElementById('scriptUrlInput');
-    const url = urlInput.value.trim();
-    localStorage.setItem('pos_script_url', url);
+function saveUrl(cfg) {
+    const input = document.getElementById(cfg.inputId);
+    const url = input.value.trim();
+    localStorage.setItem(cfg.storageKey, url);
     alert('บันทึก URL สำเร็จ!');
 }
 
-async function testSheetConnection() {
-    const urlInput = document.getElementById('scriptUrlInput');
-    const url = urlInput.value.trim();
+async function testConnection(cfg) {
+    const input = document.getElementById(cfg.inputId);
+    const url = input.value.trim();
     if (!url) { alert('กรุณากรอก Web App URL ก่อนทดสอบ'); return; }
 
-    const btn = document.getElementById('testSheetBtn');
+    const btn = document.getElementById(cfg.testBtnId);
     const originalLabel = btn.innerText;
     btn.disabled = true;
     btn.innerText = '🔌 กำลังทดสอบ...';
