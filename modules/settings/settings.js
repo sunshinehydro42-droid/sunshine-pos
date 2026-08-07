@@ -4,7 +4,7 @@
 //   - doPost ให้ payment.js บันทึกยอดขาย (callSheetWebApp action:'addSale')
 // เก็บ URL ไว้ที่ key เดียว: pos_sheet_url
 import { callSheetWebApp } from './sheet-sync.js';
-import { syncMasterData } from '../Pos/product.js';
+import { syncMasterData } from '../pos/product.js';
 
 export function initSettings() {
     const input = document.getElementById('scriptUrlInput');
