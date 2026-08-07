@@ -1,6 +1,6 @@
 
 
-<div class="settings-page">
+    <div class="settings-page">
     <div class="page-title">⚙️ ตั้งค่า</div>
 
     <div class="settings-section-title">🔗 เชื่อมต่อ Google Sheet — Master Database</div>
