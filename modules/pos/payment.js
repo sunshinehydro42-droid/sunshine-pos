@@ -2,7 +2,7 @@
 import { state, saveState } from '../../state.js';
 import { openModal, closeModal } from '../../ui.js';
 import { getCartTotals, clearCart } from './cart.js';
-import { callSheetWebApp } from '../setting/sheet-sync.js';
+import { callSheetWebApp } from '../settings/sheet-sync.js';
 
 let currentPaymentData = null;
 let paymentMode = 'cash';
@@ -90,7 +90,7 @@ function processPayment() {
 // ส่งรายการขายในบิลนี้ไป Google Sheet (ใช้ URL เดียวกับที่หน้าตั้งค่าตั้งไว้ ตอนนี้
 // Master DB กับ Sales DB รวมอยู่ในไฟล์เดียว/สคริปต์เดียวแล้ว)
 async function syncBillToSheet(bill) {
-    const url = localStorage.getItem('15L3qzMBTjq68gmJEIg46I4FSycGuVwTR-83njSIIi0E');
+    const url = localStorage.getItem('pos_sheet_url');
 
     if (!url) {
         console.warn('⚠️ ยังไม่ได้ตั้งค่า Google Sheet URL กรุณาใส่ URL ในหน้าตั้งค่า');
