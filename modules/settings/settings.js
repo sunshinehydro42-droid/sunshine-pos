@@ -5,6 +5,8 @@
 // เก็บ URL ไว้ที่ key เดียว: pos_sheet_url
 import { callSheetWebApp } from './sheet-sync.js';
 import { syncMasterData } from '../pos/product.js';
+import { flushPendingSales } from '../pos/payment.js';
+import { state } from '../../state.js';
 
 export function initSettings() {
     const input = document.getElementById('scriptUrlInput');
@@ -13,6 +15,15 @@ export function initSettings() {
     document.getElementById('saveSheetBtn').addEventListener('click', saveSheetUrl);
     document.getElementById('testSheetBtn').addEventListener('click', testSheetConnection);
     document.getElementById('syncMasterBtn')?.addEventListener('click', runMasterSync);
+    updatePendingStatus();
+}
+
+function updatePendingStatus() {
+    const el = document.getElementById('pendingSyncStatus');
+    if (!el) return;
+    el.textContent = state.pendingSales.length > 0
+        ? `⏳ มีบิลค้างซิงค์ ${state.pendingSales.length} ใบ`
+        : '';
 }
 
 function saveSheetUrl() {
@@ -50,14 +61,14 @@ async function runMasterSync() {
     btn.disabled = true;
     btn.innerText = '🔄 กำลังซิงค์...';
 
-    const result = await syncMasterData();
+    const masterResult = await syncMasterData();
+    const salesResult = await flushPendingSales();
 
     btn.disabled = false;
     btn.innerText = originalLabel;
+    updatePendingStatus();
 
-    if (result.ok) {
-        alert('✅ ' + result.message);
-    } else {
-        alert('❌ ซิงค์ไม่สำเร็จ\n\n' + result.message);
-    }
+    const line1 = (masterResult.ok ? '✅ ' : '❌ ') + masterResult.message;
+    const line2 = (salesResult.ok ? '✅ ' : '❌ ') + salesResult.message;
+    alert(line1 + '\n' + line2);
 }

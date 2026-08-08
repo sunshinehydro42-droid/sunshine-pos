@@ -8,6 +8,7 @@ export const state = {
 
     savedTables: JSON.parse(localStorage.getItem('pos_tables')) || [],          // ออเดอร์พักบิล (order.js)
     historyBills: JSON.parse(localStorage.getItem('pos_history')) || [],        // ประวัติบิล (payment.js เขียน / history.js, report.js อ่าน)
+    pendingSales: JSON.parse(localStorage.getItem('pos_pending_sync')) || [],   // บิลที่ส่งไป Sheet ไม่สำเร็จ รอซิงค์ใหม่ (payment.js เขียน/อ่าน, settings.js สั่ง flush)
     shiftHistory: JSON.parse(localStorage.getItem('pos_shift_history')) || [],  // ประวัติกะ (shift.js)
     isDarkMode: localStorage.getItem('pos_dark') === 'true',                    // ธีม (ui.js)
 

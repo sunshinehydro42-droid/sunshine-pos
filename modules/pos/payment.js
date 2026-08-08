@@ -98,15 +98,9 @@ function processPayment() {
 
 // ส่งรายการขายในบิลนี้ไป Google Sheet (ใช้ URL เดียวกับที่หน้าตั้งค่าตั้งไว้ ตอนนี้
 // Master DB กับ Sales DB รวมอยู่ในไฟล์เดียว/สคริปต์เดียวแล้ว)
+// ส่งไม่สำเร็จ (ไม่มีเน็ต/ยังไม่ตั้งค่า URL/Apps Script error) — เก็บเข้าคิวรอซิงค์
+// แทนที่จะปล่อยหายไปเฉยๆ เหมือนก่อนหน้านี้
 async function syncBillToSheet(bill) {
-    const url = localStorage.getItem('pos_sheet_url');
-
-    if (!url) {
-        console.warn('⚠️ ยังไม่ได้ตั้งค่า Google Sheet URL กรุณาใส่ URL ในหน้าตั้งค่า');
-        return;
-    }
-
-    // แปลงรายการสินค้าให้ตรงกับ addSaleRows() ใน Sales DB script
     const rows = bill.items.map(item => ({
         date: bill.date,
         category: item.category || '',
@@ -116,6 +110,13 @@ async function syncBillToSheet(bill) {
         lineTotal: Number(item.price || 0) * Number(item.qty || 1)
     }));
 
+    const url = localStorage.getItem('pos_sheet_url');
+    if (!url) {
+        console.warn('⚠️ ยังไม่ได้ตั้งค่า Google Sheet URL — เก็บบิลนี้ไว้รอซิงค์ทีหลัง บิลเลขที่:', bill.billNo);
+        queuePendingSale(bill.billNo, rows);
+        return;
+    }
+
     // ใช้ callSheetWebApp() ตัวกลางร่วมกับหน้าตั้งค่า (ไม่ใช้ no-cors) จึงอ่าน
     // ผลลัพธ์จริงจาก Apps Script ได้ — รู้ทันทีว่าบันทึกสำเร็จหรือ error อะไร
     const result = await callSheetWebApp(url, 'addSale', { rows });
@@ -123,6 +124,45 @@ async function syncBillToSheet(bill) {
     if (result.ok) {
         console.log('✅ บันทึกยอดขายลง Google Sheet สำเร็จ บิลเลขที่:', bill.billNo, '-', result.message);
     } else {
-        console.error('❌ บันทึกยอดขายไม่สำเร็จ บิลเลขที่:', bill.billNo, '-', result.message);
+        console.warn('⚠️ ส่งบิลไม่สำเร็จ (อาจไม่มีเน็ต) เก็บไว้รอซิงค์ทีหลัง บิลเลขที่:', bill.billNo, '-', result.message);
+        queuePendingSale(bill.billNo, rows);
     }
+}
+
+function queuePendingSale(billNo, rows) {
+    state.pendingSales.push({ billNo, rows });
+    saveState('pos_pending_sync', state.pendingSales);
+}
+
+// เรียกจากปุ่ม "Sync" ในหน้าตั้งค่า — วนส่งบิลทุกใบที่ค้างอยู่ในคิว
+// ใบไหนส่งสำเร็จเอาออกจากคิว ใบไหนยังไม่สำเร็จเก็บไว้รอรอบถัดไปต่อ
+export async function flushPendingSales() {
+    if (state.pendingSales.length === 0) {
+        return { ok: true, message: 'ไม่มีบิลค้างซิงค์' };
+    }
+
+    const url = localStorage.getItem('pos_sheet_url');
+    if (!url) {
+        return { ok: false, message: `ยังไม่ได้ตั้งค่า Google Sheet URL (มีบิลค้างซิงค์ ${state.pendingSales.length} ใบ)` };
+    }
+
+    const stillPending = [];
+    let successCount = 0;
+
+    for (const item of state.pendingSales) {
+        const result = await callSheetWebApp(url, 'addSale', { rows: item.rows });
+        if (result.ok) {
+            successCount++;
+        } else {
+            stillPending.push(item);
+        }
+    }
+
+    state.pendingSales = stillPending;
+    saveState('pos_pending_sync', state.pendingSales);
+
+    if (stillPending.length === 0) {
+        return { ok: true, message: `ซิงค์บิลค้างสำเร็จทั้งหมด ${successCount} ใบ` };
+    }
+    return { ok: false, message: `ซิงค์บิลค้างสำเร็จ ${successCount} ใบ เหลือค้างอีก ${stillPending.length} ใบ` };
 }
