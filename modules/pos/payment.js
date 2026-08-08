@@ -11,6 +11,7 @@ export function initPayment() {
     document.getElementById('btnCashMode').addEventListener('click', () => setPaymentMode('cash'));
     document.getElementById('btnQrMode').addEventListener('click', () => setPaymentMode('qr'));
     document.getElementById('cashReceived').addEventListener('input', calculateChange);
+    document.getElementById('exactPayBtn')?.addEventListener('click', payExact);
     document.getElementById('cancelPaymentBtn').addEventListener('click', () => closeModal('paymentModal'));
     document.getElementById('confirmPayBtn').addEventListener('click', processPayment);
 }
@@ -55,6 +56,14 @@ function calculateChange() {
         document.getElementById('changeAmount').innerText = '0';
         confirmBtn.disabled = true;
     }
+}
+
+// ปุ่ม "จ่ายพอดี" — ลูกค้าให้เงินมาพอดีเป๊ะ ไม่ต้องพิมพ์จำนวนเงิน ปิดบิลได้ในคลิกเดียว
+function payExact() {
+    if (!currentPaymentData) return;
+    document.getElementById('cashReceived').value = currentPaymentData.total;
+    document.getElementById('changeAmount').innerText = '0';
+    processPayment();
 }
 
 function processPayment() {
