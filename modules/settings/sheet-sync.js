@@ -1,36 +1,46 @@
+// sheet-sync.js — ยิง request จริงไปหา Google Apps Script Web App
+// ใช้ร่วมกันทั้งหน้า "ตั้งค่า" (ปุ่มทดสอบการเชื่อมต่อ), หน้าขาย (ดึงสินค้า/หมวดหมู่) และ payment.js (ส่งข้อมูลบิลตอนชำระเงินสำเร็จ)
 
+// 1. ฟังก์ชันดึงรายการสินค้าและหมวดหมู่ (Master Data) จาก Google Sheet
+export async function fetchMasterData(url) {
+    if (!url) return { ok: false, message: 'ยังไม่ได้ตั้งค่า Web App URL', categories: [], items: [] };
 
-    <div class="settings-page">
-    <div class="page-title">⚙️ ตั้งค่า</div>
+    try {
+        const res = await fetch(url, { method: 'GET' });
+        const data = await res.json();
 
-    <div class="settings-section-title">🔗 เชื่อมต่อ Google Sheet — Master Database</div>
-    <p class="settings-hint">ใช้ดึงหมวดหมู่ / สินค้า / ตัวเลือก มาสร้างปุ่มในหน้าขาย — หน้าขายจะอ่านจากแคชในเครื่องเสมอ ต้องกด "ซิงค์ข้อมูลล่าสุด" เพื่ออัปเดตแคชเมื่อมีอินเทอร์เน็ต</p>
-    <div class="settings-section-title">🔗 เชื่อมต่อ Google Sheet</div>
-    <p class="settings-hint">ไฟล์เดียว รวมแท็บ Categories / Products / ยอดขาย — หน้าขายอ่านจากแคชในเครื่องเสมอ ต้องกด "ซิงค์ข้อมูลล่าสุด" เพื่ออัปเดตแคชเมื่อมีอินเทอร์เน็ต</p>
-    <div class="modal-field">
-        <label for="masterScriptUrlInput">Master DB Web App URL</label>
-        <input type="text" id="masterScriptUrlInput" placeholder="https://script.google.com/macros/s/xxxx/exec">
-        <label for="scriptUrlInput">Google Apps Script Web App URL</label>
-        <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/xxxx/exec">
-    </div>
-    <div class="modal-actions">
-        <button class="modal-btn btn-save" id="testMasterBtn">🔌 ทดสอบการเชื่อมต่อ</button>
-        <button class="modal-btn btn-confirm" id="saveMasterBtn">💾 บันทึก</button>
-        <button class="modal-btn btn-save" id="testSheetBtn">🔌 ทดสอบการเชื่อมต่อ</button>
-        <button class="modal-btn btn-confirm" id="saveSheetBtn">💾 บันทึก</button>
-    </div>
-    <div class="modal-actions">
-        <button class="modal-btn btn-confirm" id="syncMasterBtn">🔄 ซิงค์ข้อมูลล่าสุด (สินค้า/หมวดหมู่)</button>
-    </div>
+        if (data.status === 'success') {
+            return {
+                ok: true,
+                categories: data.categories || [],
+                items: data.items || []
+            };
+        } else {
+            return { ok: false, message: data.message || 'ดึงข้อมูลไม่สำเร็จ', categories: [], items: [] };
+        }
+    } catch (err) {
+        return { 
+            ok: false, 
+            message: 'เชื่อมต่อดึงข้อมูลไม่สำเร็จ: ' + err.message, 
+            categories: [], 
+            items: [] 
+        };
+    }
+}
 
-    <div class="settings-section-title">🔗 เชื่อมต่อ Google Sheet — Sales Database</div>
-    <p class="settings-hint">ใช้บันทึกยอดขายหลังชำระเงินสำเร็จ</p>
-    <div class="modal-field">
-        <label for="salesScriptUrlInput">Sales DB Web App URL</label>
-        <input type="text" id="salesScriptUrlInput" placeholder="https://script.google.com/macros/s/xxxx/exec">
-    </div>
-    <div class="modal-actions">
-        <button class="modal-btn btn-save" id="testSalesBtn">🔌 ทดสอบการเชื่อมต่อ</button>
-        <button class="modal-btn btn-confirm" id="saveSalesBtn">💾 บันทึก</button>
-    </div>
-</div>
+// 2. ฟังก์ชันส่งข้อมูลไปยัง Google Sheet (บันทึกยอดขาย / ตัดสต็อก / ทดสอบการเชื่อมต่อ)
+export async function callSheetWebApp(url, action, payload = {}) {
+    if (!url) return { ok: false, message: 'ยังไม่ได้ตั้งค่า Web App URL' };
+
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action, ...payload })
+        });
+        const data = await res.json();
+        return { ok: data.status === 'success' || data.status === 'ok', message: data.message || '' };
+    } catch (err) {
+        return { ok: false, message: 'เชื่อมต่อไม่สำเร็จ (เช็ค URL หรือการตั้งค่า Deploy ของ Apps Script): ' + err.message };
+    }
+}
