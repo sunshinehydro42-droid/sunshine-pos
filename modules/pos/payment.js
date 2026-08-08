@@ -2,7 +2,8 @@
 import { state, saveState } from '../../state.js';
 import { openModal, closeModal } from '../../ui.js';
 import { getCartTotals, clearCart } from './cart.js';
-import { callSheetWebApp } from '../settings/sheet-sync.js';
+// เปลี่ยนจาก import { callSheetWebApp } from '../settings/sheet-sync.js' เป็นเรียกผ่าน window global แทน
+// (sheet-sync.js ตอนนี้โหลดแบบ classic <script> ใน index.html แล้วประกาศ window.callSheetWebApp ให้ทุกไฟล์เรียกใช้ร่วมกัน)
 
 let currentPaymentData = null;
 let paymentMode = 'cash';
@@ -117,9 +118,9 @@ async function syncBillToSheet(bill) {
         return;
     }
 
-    // ใช้ callSheetWebApp() ตัวกลางร่วมกับหน้าตั้งค่า (ไม่ใช้ no-cors) จึงอ่าน
+    // ใช้ window.callSheetWebApp() ตัวกลางร่วมกับหน้าตั้งค่า (ไม่ใช้ no-cors) จึงอ่าน
     // ผลลัพธ์จริงจาก Apps Script ได้ — รู้ทันทีว่าบันทึกสำเร็จหรือ error อะไร
-    const result = await callSheetWebApp(url, 'addSale', { rows });
+    const result = await window.callSheetWebApp(url, 'addSale', { rows });
 
     if (result.ok) {
         console.log('✅ บันทึกยอดขายลง Google Sheet สำเร็จ บิลเลขที่:', bill.billNo, '-', result.message);
@@ -150,7 +151,7 @@ export async function flushPendingSales() {
     let successCount = 0;
 
     for (const item of state.pendingSales) {
-        const result = await callSheetWebApp(url, 'addSale', { rows: item.rows });
+        const result = await window.callSheetWebApp(url, 'addSale', { rows: item.rows });
         if (result.ok) {
             successCount++;
         } else {
