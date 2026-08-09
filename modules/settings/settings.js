@@ -3,10 +3,12 @@
 //   - doGet ให้หน้าขายดึงหมวดหมู่/สินค้า (fetchMasterData)
 //   - doPost ให้ payment.js บันทึกยอดขาย (callSheetWebApp action:'addSale')
 // เก็บ URL ไว้ที่ key เดียว: pos_sheet_url
-import { callSheetWebApp } from './sheet-sync.js';
+//
+// หมายเหตุ: callSheetWebApp / fetchMasterData ตอนนี้โหลดผ่าน <script> แบบ classic ใน index.html
+// แล้วประกาศเป็น window.callSheetWebApp / window.fetchMasterData ให้ทุกไฟล์เรียกใช้ร่วมกัน
+// (ไม่ใช้ import จาก sheet-sync.js อีกต่อไป กันปัญหา path/case-sensitive ที่เคยพังตอน deploy)
 import { syncMasterData } from '../pos/product.js';
 import { flushPendingSales } from '../pos/payment.js';
-import { state } from '../../state.js';
 
 export function initSettings() {
     const input = document.getElementById('scriptUrlInput');
@@ -15,15 +17,6 @@ export function initSettings() {
     document.getElementById('saveSheetBtn').addEventListener('click', saveSheetUrl);
     document.getElementById('testSheetBtn').addEventListener('click', testSheetConnection);
     document.getElementById('syncMasterBtn')?.addEventListener('click', runMasterSync);
-    updatePendingStatus();
-}
-
-function updatePendingStatus() {
-    const el = document.getElementById('pendingSyncStatus');
-    if (!el) return;
-    el.textContent = state.pendingSales.length > 0
-        ? `⏳ มีบิลค้างซิงค์ ${state.pendingSales.length} ใบ`
-        : '';
 }
 
 function saveSheetUrl() {
@@ -43,7 +36,7 @@ async function testSheetConnection() {
     btn.disabled = true;
     btn.innerText = '🔌 กำลังทดสอบ...';
 
-    const result = await callSheetWebApp(url, 'ping');
+    const result = await window.callSheetWebApp(url, 'ping');
 
     btn.disabled = false;
     btn.innerText = originalLabel;
@@ -55,6 +48,10 @@ async function testSheetConnection() {
     }
 }
 
+// ปุ่มนี้ตอนนี้ทำ 2 อย่างพร้อมกันในคลิกเดียว:
+//   1) ขาเข้า: ดึงเมนู/หมวดหมู่/สต็อกล่าสุดจาก Google Sheet เข้ามาอัปเดตแคชในเครื่อง (syncMasterData)
+//   2) ขาออก: ส่งบิลที่คิดเงินตอนไม่มีเน็ต/ส่งไม่สำเร็จ ที่ค้างอยู่ในคิว กลับไปบันทึกที่ Google Sheet (flushPendingSales)
+// ก่อนหน้านี้ flushPendingSales ถูกเขียนไว้เฉยๆ ไม่มีใครเรียกใช้ บิลที่ค้างคิวเลยไม่เคยถูกส่งซ้ำเลย
 async function runMasterSync() {
     const btn = document.getElementById('syncMasterBtn');
     const originalLabel = btn.innerText;
@@ -66,9 +63,10 @@ async function runMasterSync() {
 
     btn.disabled = false;
     btn.innerText = originalLabel;
-    updatePendingStatus();
 
-    const line1 = (masterResult.ok ? '✅ ' : '❌ ') + masterResult.message;
-    const line2 = (salesResult.ok ? '✅ ' : '❌ ') + salesResult.message;
-    alert(line1 + '\n' + line2);
+    const messages = [];
+    messages.push((masterResult.ok ? '✅ ' : '❌ ') + masterResult.message);
+    messages.push((salesResult.ok ? '✅ ' : '⚠️ ') + salesResult.message);
+
+    alert(messages.join('\n'));
 }
