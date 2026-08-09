@@ -41,6 +41,14 @@
         <!-- เนื้อหาจาก pos.html, backoffice.html จะมาโผล่ที่นี่ -->
     </main>
 
+    <!--
+        sheet-sync.js ต้องโหลดแบบ classic script (ไม่ใช่ type="module") และต้องอยู่ "ก่อน" main.js เสมอ
+        เพราะไฟล์นี้ประกาศ window.callSheetWebApp / window.fetchMasterData ไว้ให้ settings.js, product.js, payment.js
+        เรียกใช้งานร่วมกันแบบ global function — ถ้าลืมใส่บรรทัดนี้ ฟังก์ชันทั้งสองจะเป็น undefined
+        ทุกจุดที่เรียกใช้จะ error เงียบๆ (ถูก catch ไว้) แล้วเข้าคิว/ไม่ทำงาน โดยไม่มี error โชว์ให้เห็นชัดเจน
+    -->
+    <script src="modules/settings/sheet-sync.js"></script>
+
     <!-- ต้องใส่ type="module" เพื่อให้ใช้ระบบ import/export ได้ -->
     <script type="module" src="main.js"></script>
 </body>
