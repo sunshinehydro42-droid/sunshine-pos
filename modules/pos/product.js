@@ -1,7 +1,9 @@
 // product.js — แสดง/กรองสินค้าและหมวดหมู่ฝั่งขาย (อ่านอย่างเดียว)
 import { state, saveState } from '../../state.js';
 import { handleProductClick } from './cart.js';
-import { fetchMasterData } from '../settings/sheet-sync.js';
+// เปลี่ยนจาก import { fetchMasterData } from '../settings/sheet-sync.js' เป็นเรียกผ่าน window global แทน
+// (sheet-sync.js ตอนนี้โหลดแบบ classic <script> ใน index.html แล้วประกาศ window.fetchMasterData ให้ทุกไฟล์เรียกใช้ร่วมกัน
+// ไม่ export อะไรอีกต่อไป ถ้ายังเขียน import { fetchMasterData } แบบเดิม จะเจอ SyntaxError ทั้งไฟล์ทันที)
 
 let activeCategory = 'ทั้งหมด';
 
@@ -25,7 +27,7 @@ export async function syncMasterData() {
         return { ok: false, message: 'ยังไม่ได้ตั้งค่า Google Sheet URL ในหน้าตั้งค่า' };
     }
 
-    const res = await fetchMasterData(webAppUrl);
+    const res = await window.fetchMasterData(webAppUrl);
     if (!res.ok) {
         return { ok: false, message: res.message };
     }
